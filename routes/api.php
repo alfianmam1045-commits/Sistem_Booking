@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -35,5 +36,11 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post("/bookings", [BookingController::class, "createData"]);
     Route::patch("/bookings/{id}", [BookingController::class, "updateData"]);
     Route::delete("/bookings/{id}", [BookingController::class, "deleteData"]);
+
+    Route::get("/payments", [PaymentController::class, "getAllData"]);
+    Route::get("/payments/{id}", [PaymentController::class, "getSingleData"]);
+    Route::post("/payments", [PaymentController::class, "createData"]);
+    Route::patch("/payments/{id}", [PaymentController::class, "updateData"]);
+    Route::delete("/payments/{id}", [PaymentController::class, "deleteData"]);
 
 });
