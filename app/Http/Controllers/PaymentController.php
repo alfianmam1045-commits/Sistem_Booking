@@ -6,6 +6,9 @@ use App\Helpers\ApiResponse;
 use App\Models\Payment;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+use function Laravel\Prompts\error;
 
 class PaymentController extends Controller
 {
@@ -38,6 +41,10 @@ class PaymentController extends Controller
                 'payment_date' => "sometimes|string|nullable",
             ]);
 
+            $existing = Payment::where("booking_id", $validated["booking_id"])->first();
+            if ($existing)
+                return ApiResponse::error("Booking already has a payment");
+
             $data = Payment::create($validated);
 
             return ApiResponse::success($data, "Success To Create Data");
@@ -50,17 +57,20 @@ class PaymentController extends Controller
     {
         try {
             $validated = $request->validate([
-                'booking_id' => "required|integer",
                 'payment_method' => "required|in:cash,transfer,ewallet",
                 'amount' => "required|integer",
-                'payment_status' => 'sometimes|in:pending,paid,failed|nullable',
+                'payment_status' => 'sometimes|in:pending,paid,failed',
                 'payment_date' => "sometimes|string|nullable",
             ]);
 
+            $current = Payment::where("payment_id", $id)->first();
+            if ($current["payment_status"] != "pending")
+                return ApiResponse::error("Payment Status has been {$current['payment_status']}");
 
             $data = Payment::where("payment_id", $id)->update($validated);
             return ApiResponse::success($data, "Success To Update Data");
         } catch (Exception $e) {
+            Log::alert($e);
 
             return ApiResponse::error(message: "Internal Server Error", status: 500);
         }

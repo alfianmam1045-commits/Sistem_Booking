@@ -15,7 +15,7 @@ class BookingSeeder extends Seeder
                 'service_id' => 1,
                 'booking_date' => now()->addDay()->toDateString(),
                 'status' => 'pending',
-                'total_price' => 250000.00,
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -24,7 +24,7 @@ class BookingSeeder extends Seeder
                 'service_id' => 2,
                 'booking_date' => now()->addDays(2)->toDateString(),
                 'status' => 'confirmed',
-                'total_price' => 500000.00,
+
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

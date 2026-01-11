@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('service_id');
             $table->date('booking_date');
             $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
-            $table->decimal('total_price', 10, 2);
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
