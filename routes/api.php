@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix("/auth")->group(function () {
@@ -14,5 +15,11 @@ Route::middleware('jwt.auth')->group(function () {
         Route::get("me", [AuthController::class, "me"]);
         Route::delete("logout", [AuthController::class, "logout"]);
     });
+
+    Route::get("/users", [UserController::class, "getAllData"]);
+    Route::get("/users/{id}", [UserController::class, "getSingleData"]);
+    Route::post("/users", [UserController::class, "createData"]);
+    Route::patch("/users/{id}", [UserController::class, "updateData"]);
+    Route::delete("/users/{id}", [UserController::class, "deleteData"]);
 
 });

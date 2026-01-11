@@ -6,6 +6,8 @@ use App\Helpers\ApiResponse;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -37,7 +39,7 @@ class UserController extends Controller
                 'password' => 'required|string',
                 'role' => "required|in:admin,user",
             ]);
-
+            $validated["password"] = Hash::make($validated["password"]);
             $data = User::create($validated);
 
             return ApiResponse::success($data, "Success To Get Create Data");
@@ -53,20 +55,22 @@ class UserController extends Controller
                 'name' => "sometimes|string",
                 'email' => "sometimes|string|email",
                 'phone' => "sometimes|integer",
-                'password' => 'sometimes|string',
+                'password' => 'sometimes|string|nullable',
                 'role' => "sometimes|in:admin,user",
             ]);
-
-            $data = User::where("user_Id", $id)->update($validated);
-            return ApiResponse::success($data, "Success To Get Update Data");
+            if ($validated["password"] ?? false)
+                $validated["password"] = Hash::make($validated["password"]);
+            $data = User::where("user_id", $id)->update($validated);
+            return ApiResponse::success($data, "Success To Update Data");
         } catch (Exception $e) {
+            Log::alert($e);
             return ApiResponse::error(message: "Internal Server Error", status: 500);
         }
     }
     public function deleteData($id)
     {
         try {
-            $data = User::where("nurse_id", $id)->delete();
+            $data = User::where("user_id", $id)->delete();
             return ApiResponse::success($data, "Success To Get Delete Data");
         } catch (Exception $e) {
             return ApiResponse::error(message: "Internal Server Error", status: 500);

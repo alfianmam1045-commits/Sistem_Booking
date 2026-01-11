@@ -26,6 +26,8 @@ class User extends Authenticatable implements JWTSubject
         'role'
     ];
 
+    protected $primaryKey = 'user_id';
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -50,7 +52,7 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getJWTIdentifier()
     {
-        return $this->getKey(); // user_id
+        return (string) $this->getKey(); // user_id
     }
 
     /**
