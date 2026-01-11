@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Helpers\ApiResponse;
-use App\Models\Service;
+use App\Models\Payment;
 use Exception;
 use Illuminate\Http\Request;
 
-class ServiceController extends Controller
+class PaymentController extends Controller
 {
     public function getAllData()
     {
         try {
-            $data = Service::get();
+            $data = Payment::get();
             return ApiResponse::success($data, "Success To Get All Data");
         } catch (Exception $e) {
             return ApiResponse::error(message: "Internal Server Error", status: 500);
@@ -22,7 +21,7 @@ class ServiceController extends Controller
     public function getSingleData($id)
     {
         try {
-            $data = Service::where("service_id", $id)->get();
+            $data = Payment::where("payment_id", $id)->get();
             return ApiResponse::success($data, "Success To Get Single Data");
         } catch (Exception $e) {
             return ApiResponse::error(message: "Internal Server Error", status: 500);
@@ -32,13 +31,14 @@ class ServiceController extends Controller
     {
         try {
             $validated = $request->validate([
-                'service_name' => "required|string",
-                'description' => "required|string",
-                'price' => "required|integer",
-                'status' => 'sometimes|in:active,inactive|nullable',
+                'booking_id' => "sometimes|integer",
+                'payment_method' => "sometimes|in:cash,transfer,ewallet",
+                'amount' => "sometimes|integer",
+                'payment_status' => 'sometimes|in:pending,paid,failed|nullable',
+                'payment_date' => "sometimes|string|nullable",
             ]);
 
-            $data = Service::create($validated);
+            $data = Payment::create($validated);
 
             return ApiResponse::success($data, "Success To Create Data");
 
@@ -50,13 +50,15 @@ class ServiceController extends Controller
     {
         try {
             $validated = $request->validate([
-                'service_name' => "sometimes|string",
-                'description' => "sometimes|string",
-                'price' => "sometimes|integer",
-                'status' => 'sometimes|in:active,inactive',
+                'booking_id' => "required|integer",
+                'payment_method' => "required|in:cash,transfer,ewallet",
+                'amount' => "required|integer",
+                'payment_status' => 'sometimes|in:pending,paid,failed|nullable',
+                'payment_date' => "sometimes|string|nullable",
             ]);
 
-            $data = Service::where("service_id", $id)->update($validated);
+
+            $data = Payment::where("payment_id", $id)->update($validated);
             return ApiResponse::success($data, "Success To Update Data");
         } catch (Exception $e) {
 
@@ -66,11 +68,10 @@ class ServiceController extends Controller
     public function deleteData($id)
     {
         try {
-            $data = Service::where("service_id", $id)->delete();
+            $data = Payment::where("payment_id", $id)->delete();
             return ApiResponse::success($data, "Success To Delete Data");
         } catch (Exception $e) {
             return ApiResponse::error(message: "Internal Server Error", status: 500);
         }
     }
-
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
+
     protected $table = 'services';
     protected $primaryKey = 'service_id';
 
@@ -21,5 +22,6 @@ class Service extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
 
 }
