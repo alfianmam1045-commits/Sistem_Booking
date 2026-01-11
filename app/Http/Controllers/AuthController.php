@@ -15,7 +15,7 @@ class AuthController extends Controller
     {
         try {
             $data = Auth::user();
-            return ApiResponse::success("Login Success", $data);
+            return ApiResponse::success($data, "Login Success");
         } catch (Exception $e) {
             return ApiResponse::error("Internal Server Error", 500);
         }
@@ -27,7 +27,7 @@ class AuthController extends Controller
             if (!$token = Auth::guard('api')->attempt($credential)) {
                 return ApiResponse::error("Unauthorized", 401);
             }
-            return ApiResponse::success("Login Success", ['token' => $token]);
+            return ApiResponse::success(['token' => $token], "Login Success", );
         } catch (Exception $e) {
             return ApiResponse::error("Internal Server Error", 500);
         }
@@ -52,7 +52,7 @@ class AuthController extends Controller
     {
         try {
             $token = Auth::guard('api')->refresh();
-            return ApiResponse::success("Refresh Token Success", ['token' => $token]);
+            return ApiResponse::success(['token' => $token], "Refresh Token Success", );
         } catch (Exception $e) {
             return ApiResponse::error("Internal Server Error", 500);
         }
@@ -61,7 +61,7 @@ class AuthController extends Controller
     {
         try {
             Auth::guard('api')->invalidate();
-            return ApiResponse::success("Logout Success");
+            return ApiResponse::success(message: "Logout Success");
         } catch (Exception $e) {
             return ApiResponse::error("Internal Server Error", 500);
         }

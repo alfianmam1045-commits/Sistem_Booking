@@ -6,81 +6,44 @@ use Illuminate\Http\JsonResponse;
 
 class ApiResponse
 {
-    /**
-     * Success Response
-     */
     public static function success(
+        mixed $data = null,
         string $message = 'Success',
-        $data = null,
-        int $statusCode = 200
+        int $status = 200
     ): JsonResponse {
         return response()->json([
-            'status' => true,
+            'success' => true,
             'message' => $message,
             'data' => $data,
-        ], $statusCode);
+        ], $status);
     }
 
-    /**
-     * Error Response
-     */
     public static function error(
         string $message = 'Error',
-        $errors = null,
-        int $statusCode = 400
+        int $status = 400,
+        mixed $errors = null
     ): JsonResponse {
         return response()->json([
-            'status' => false,
+            'success' => false,
             'message' => $message,
             'errors' => $errors,
-        ], $statusCode);
+        ], $status);
     }
 
-    /**
-     * Validation Error Response
-     */
-    public static function validationError($errors): JsonResponse
-    {
-        return self::error(
-            'Validation error',
-            $errors,
-            422
-        );
-    }
-
-    /**
-     * Unauthorized Response
-     */
-    public static function unauthorized(
-        string $message = 'Unauthorized'
+    public static function pagination(
+        $data,
+        string $message = 'Success'
     ): JsonResponse {
-        return self::error($message, null, 401);
-    }
-
-    /**
-     * Forbidden Response
-     */
-    public static function forbidden(
-        string $message = 'Forbidden'
-    ): JsonResponse {
-        return self::error($message, null, 403);
-    }
-
-    /**
-     * Not Found Response
-     */
-    public static function notFound(
-        string $message = 'Data not found'
-    ): JsonResponse {
-        return self::error($message, null, 404);
-    }
-
-    /**
-     * Server Error Response
-     */
-    public static function serverError(
-        string $message = 'Internal server error'
-    ): JsonResponse {
-        return self::error($message, null, 500);
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data->items(),
+            'meta' => [
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'per_page' => $data->perPage(),
+                'total' => $data->total(),
+            ]
+        ]);
     }
 }
