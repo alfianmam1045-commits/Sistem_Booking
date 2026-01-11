@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,5 +22,11 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post("/users", [UserController::class, "createData"]);
     Route::patch("/users/{id}", [UserController::class, "updateData"]);
     Route::delete("/users/{id}", [UserController::class, "deleteData"]);
+
+    Route::get("/services", [ServiceController::class, "getAllData"]);
+    Route::get("/services/{id}", [ServiceController::class, "getSingleData"]);
+    Route::post("/services", [ServiceController::class, "createData"]);
+    Route::patch("/services/{id}", [ServiceController::class, "updateData"]);
+    Route::delete("/services/{id}", [ServiceController::class, "deleteData"]);
 
 });
